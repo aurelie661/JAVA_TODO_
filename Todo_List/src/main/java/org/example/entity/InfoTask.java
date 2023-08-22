@@ -19,6 +19,13 @@ public class InfoTask {
     public InfoTask() {
     }
 
+    public InfoTask(String description, LocalDate dueDate, Integer priority, Task task) {
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.task = task;
+    }
+
     public Long getId() {
         return id;
     }
