@@ -33,24 +33,6 @@ public class TaskDAOImpl implements ITaskDAO {
             entityManager.close();
         }
     }
-    public boolean addInfoTask(InfoTask infoTask) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.persist(infoTask);
-            transaction.commit();
-            return true;
-        }catch (Exception e){
-            if(transaction.isActive()){
-                transaction.rollback();
-            }
-            e.printStackTrace();
-            return false;
-        }finally {
-            entityManager.close();
-        }
-    }
 
     @Override
     public List<Task> getAllTasks() {

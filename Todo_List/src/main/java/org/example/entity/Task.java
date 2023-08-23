@@ -7,22 +7,14 @@ import javax.persistence.*;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "task_id")
     private Long id;
     private String title;
     private boolean isCompleted;
-    @OneToOne(mappedBy = "task")
+    @OneToOne(mappedBy = "task",cascade = CascadeType.ALL,orphanRemoval = true)
     private InfoTask infoTask;
 
     public Task() {
     }
-
-    public Task(String title, boolean isCompleted, InfoTask infoTask) {
-        this.title = title;
-        this.isCompleted = isCompleted;
-        this.infoTask = infoTask;
-    }
-
     public Long getId() {
         return id;
     }
@@ -55,13 +47,5 @@ public class Task {
         this.infoTask = infoTask;
     }
 
-    @Override
-    public String toString() {
-        return "Task => " +
-                "id = " + id +
-                ", title = '" + title + '\'' +
-                ", isCompleted = " + isCompleted +
-                ", infoTask = " + infoTask +
-                '.';
-    }
+
 }

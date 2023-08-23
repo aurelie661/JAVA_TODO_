@@ -11,19 +11,18 @@ public class InfoTask {
     private Long id;
     private String description;
     private LocalDate dueDate;
-    private Integer priority;
-    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name = "task_id", unique = true,nullable = false)
+    private int priority;
+    @OneToOne
+    @JoinColumn(name = "task_id")
     private Task task;
 
     public InfoTask() {
     }
 
-    public InfoTask(String description, LocalDate dueDate, Integer priority, Task task) {
+    public InfoTask(String description, LocalDate dueDate, Integer priority) {
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.task = task;
     }
 
     public Long getId() {

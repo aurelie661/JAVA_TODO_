@@ -5,6 +5,7 @@ import org.example.impl.TaskDAOImpl;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -61,18 +62,21 @@ public class ToDoListAppConsole {
         String title = scanner.nextLine();
         System.out.println("Entrer la description de la tâche : ");
         String description = scanner.nextLine();
-        System.out.println("Entrer la date d'échéance de la tâche : ");
-        LocalDate dueDate = LocalDate.parse(scanner.next());
+        System.out.println("Entrer la date d'échéance de la tâche (dd.MM.yyyy): ");
+        String dueDateStr = scanner.nextLine();
+        LocalDate dueDate = LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         System.out.println("Entrer le niveau de priorité de la tâche (1 à 10): ");
         Integer priority = scanner.nextInt();
         scanner.nextLine();
 
-        InfoTask infoTask = new InfoTask();
-        infoTask.setDescription(description);
-        infoTask.setDueDate(dueDate);
-        infoTask.setPriority(priority);
+        Task task = new Task();
+        task.setTitle(title);
+        task.setCompleted(false);
 
-        Task task = new Task(title,false,infoTask);
+        InfoTask infoTask = new InfoTask(description,dueDate,priority);
+
+        task.setInfoTask(infoTask);
+        infoTask.setTask(task);
 
         if(taskDAO.addTask(task)){
             System.out.println("Tâche ajoutée avec succès !");
