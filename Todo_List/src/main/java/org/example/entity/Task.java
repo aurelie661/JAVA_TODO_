@@ -1,6 +1,8 @@
 package org.example.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tasks")
@@ -12,6 +14,8 @@ public class Task {
     private boolean isCompleted;
     @OneToOne(mappedBy = "task",cascade = CascadeType.ALL,orphanRemoval = true)
     private InfoTask infoTask;
+    @OneToMany(mappedBy = "task")
+    private List<User> users;
 
     public Task() {
     }

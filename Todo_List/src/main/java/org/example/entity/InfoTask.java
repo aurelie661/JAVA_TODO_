@@ -72,7 +72,7 @@ public class InfoTask {
                 ", description = '" + description + '\'' +
                 ", dueDate = " + dueDate +
                 ", priority = " + priority +
-                ", task = " + task +
+                ", task_id = " + task.getId() +
                 '.';
     }
 }
