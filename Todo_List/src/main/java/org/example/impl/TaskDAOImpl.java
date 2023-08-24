@@ -1,7 +1,7 @@
 package org.example.impl;
 import org.example.dao.ITaskDAO;
-import org.example.entity.InfoTask;
 import org.example.entity.Task;
+import org.example.entity.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -33,7 +33,35 @@ public class TaskDAOImpl implements ITaskDAO {
             entityManager.close();
         }
     }
+    public boolean addTaskOfUser(Task task, Long userId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            User user = entityManager.find(User.class,userId);
+            task.setUser(user);
+            user.getTasks().add(task);
+            entityManager.persist(task);
+            transaction.commit();
+            return true;
+        }catch (Exception e){
+            if(transaction.isActive()){
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }finally {
+            entityManager.close();
+        }
+    }
 
+    public List<Task> getTaskOfUser(Long userId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Task> tasks = entityManager.createQuery("SELECT t FROM Task t WHERE t.person.id = :id")
+                .setParameter("id",userId)
+                .getResultList();
+        return tasks;
+    }
     @Override
     public List<Task> getAllTasks() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
