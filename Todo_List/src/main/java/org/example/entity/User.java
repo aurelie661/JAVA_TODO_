@@ -10,10 +10,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Task> tasks;
     public User() {
     }
+
+    public User(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
@@ -35,5 +40,14 @@ public class User {
     }
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @Override
+    public String toString() {
+        return "User => " +
+                "id = " + id +
+                ", name = '" + name + '\'' +
+                ", tasks = " + tasks +
+                '.';
     }
 }

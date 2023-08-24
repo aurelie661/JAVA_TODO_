@@ -14,7 +14,7 @@ public class Task {
     private boolean isCompleted;
     @OneToOne(mappedBy = "task",cascade = CascadeType.ALL,orphanRemoval = true)
     private InfoTask infoTask;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     public Task() {
