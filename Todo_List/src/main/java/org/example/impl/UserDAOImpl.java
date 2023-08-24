@@ -54,25 +54,22 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public boolean deleteUser(Long userId) {
+    public void deleteUser(Long userId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         try {
             entityTransaction.begin();
-            Task task = entityManager.find(Task.class,userId);
-            if(task != null){
-                entityManager.remove(task);
-                entityTransaction.commit();
-                return true;
-            } else {
-                return false;
+            User user = entityManager.find(User.class, userId);
+            if(user != null) {
+                entityManager.remove(user);
+
             }
+            entityTransaction.commit();
         }catch (Exception e){
             if(entityTransaction.isActive()){
                 entityTransaction.rollback();
             }
             e.printStackTrace();
-            return false;
         }finally {
             entityManager.close();
         }

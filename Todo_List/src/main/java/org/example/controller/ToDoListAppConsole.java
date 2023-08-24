@@ -4,14 +4,11 @@ import org.example.entity.Task;
 import org.example.entity.User;
 import org.example.impl.TaskDAOImpl;
 import org.example.impl.UserDAOImpl;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class ToDoListAppConsole {
@@ -54,7 +51,7 @@ public class ToDoListAppConsole {
                 case 3 -> addTask(scanner);
                 case 4 -> displayTasks();
                 case 5 -> markTaskAsCompleted(scanner);
-                case 6 -> System.out.println();
+                case 6 -> deleteUser(scanner);
                 case 7 -> deleteTask(scanner);
                 case 8 -> System.out.println();
                 case 9 -> System.out.println();
@@ -98,6 +95,11 @@ public class ToDoListAppConsole {
         System.out.println("Entrer le niveau de priorité de la tâche (1 à 10): ");
         Integer priority = scanner.nextInt();
         scanner.nextLine();
+        System.out.println();
+        displayUsers();
+        System.out.println();
+        System.out.println("Entrez la personne pour qui cette tâche est attribuée: (id)");
+        Long userId = scanner.nextLong();
 
         Task task = new Task();
         task.setTitle(title);
@@ -108,7 +110,7 @@ public class ToDoListAppConsole {
         task.setInfoTask(infoTask);
         infoTask.setTask(task);
 
-        if(taskDAO.addTask(task)){
+        if(taskDAO.addTaskOfUser(task,userId)){
             System.out.println("Tâche ajoutée avec succès !");
             System.out.println(task.getTitle() +" "+ infoTask);
         }else {
@@ -121,19 +123,11 @@ public class ToDoListAppConsole {
         System.out.println();
         System.out.println("Pour quel utilisateur :");
         Long userId = scanner.nextLong();
+        scanner.nextLine();
 
-        List<Task> tasks = taskDAO.getAllTasks();
-        if(userDAO.getUserById(userId)){
-            if (tasks.isEmpty()) {
-                System.out.println("Aucune tâche trouvée.");
-            } else {
-                System.out.println("=== Liste des tâches pour l'utilisateur "+userId+" ===");
-                for (Task task : tasks) {
-                    System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString());
-                }
-            }
-        }else{
-            System.out.println("Aucun utilisateur trouvé.");
+        List<Task> tasks = taskDAO.getTaskOfUser(userId);
+        for (Task task : tasks) {
+            System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString());
         }
     }
     private static void displayUsers() {
@@ -172,9 +166,23 @@ public class ToDoListAppConsole {
             System.out.println("Erreur");
         }
     }
+    private static void deleteUser(Scanner scanner){
+        displayUsers();
+        System.out.println();
+        System.out.println("Entrez l'ID de la personne à suppimer : ");
+        Long userId  = scanner.nextLong();
+        scanner.nextLine();
+
+        if (userDAO.getUserById(userId)){
+            userDAO.deleteUser(userId);
+            System.out.println("Suppression OK");
+        }else {
+            System.out.println("Erreur");
+        }
+    }
 
     private static void markTaskAsCompleted(Scanner scanner){
-        System.out.println("Entrez l'ID de la tâche à supprimer : ");
+        System.out.println("Entrez l'ID de la tâche terminer : ");
         Long taskId  = scanner.nextLong();
         scanner.nextLine();
 
