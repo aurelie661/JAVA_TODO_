@@ -14,19 +14,17 @@ public class Task {
     private boolean isCompleted;
     @OneToOne(mappedBy = "task",cascade = CascadeType.ALL,orphanRemoval = true)
     private InfoTask infoTask;
-    @OneToMany(mappedBy = "task")
-    private List<User> users;
-
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
     public Task() {
     }
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getTitle() {
         return title;
     }
@@ -50,6 +48,10 @@ public class Task {
     public void setInfoTask(InfoTask infoTask) {
         this.infoTask = infoTask;
     }
-
-
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

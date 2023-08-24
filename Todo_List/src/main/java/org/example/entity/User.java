@@ -1,21 +1,19 @@
 package org.example.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name="customer")
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToOne
-    @JoinColumn(name = "task_id")
-    private Task task;
-
+    @OneToMany(mappedBy = "user")
+    private List<Task> tasks;
     public User() {
     }
-
     public Long getId() {
         return id;
     }
@@ -32,11 +30,10 @@ public class User {
         this.name = name;
     }
 
-    public Task getTask() {
-        return task;
+    public List<Task> getTasks() {
+        return tasks;
     }
-
-    public void setTask(Task task) {
-        this.task = task;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }
