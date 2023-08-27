@@ -33,13 +33,14 @@ public class TaskDAOImpl implements ITaskDAO {
             entityManager.close();
         }
     }
-    public boolean addTaskOfUser(Task task, Long userId) {
+    public boolean addTaskOfUser(Task task, Long userId, String categoryName) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             User user = entityManager.find(User.class,userId);
             task.setUser(user);
+            task.setCategories(categoryName);
             user.getTasks().add(task);
             entityManager.persist(task);
             transaction.commit();

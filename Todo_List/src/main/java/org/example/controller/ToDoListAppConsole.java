@@ -1,13 +1,16 @@
 package org.example.controller;
+import org.example.entity.Category;
 import org.example.entity.InfoTask;
 import org.example.entity.Task;
 import org.example.entity.User;
+import org.example.impl.CategoryDAOImpl;
 import org.example.impl.TaskDAOImpl;
 import org.example.impl.UserDAOImpl;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,12 +18,13 @@ public class ToDoListAppConsole {
     private static EntityManagerFactory entityManagerFactory;
     private static TaskDAOImpl taskDAO;
     private static UserDAOImpl userDAO;
+    private  static CategoryDAOImpl categoryDAO;
 
     public static void start() {
         entityManagerFactory = Persistence.createEntityManagerFactory("todolist");
         taskDAO = new TaskDAOImpl(entityManagerFactory);
         userDAO = new UserDAOImpl(entityManagerFactory);
-
+        categoryDAO = new CategoryDAOImpl(entityManagerFactory);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -53,8 +57,8 @@ public class ToDoListAppConsole {
                 case 5 -> markTaskAsCompleted(scanner);
                 case 6 -> deleteUser(scanner);
                 case 7 -> deleteTask(scanner);
-                case 8 -> System.out.println();
-                case 9 -> System.out.println();
+                case 8 -> addCategory(scanner);
+                case 9 -> deleteCategory(scanner);
                 case 10 -> System.out.println();
                 case 11 -> System.out.println();
                 case 12 -> System.out.println();
@@ -63,13 +67,11 @@ public class ToDoListAppConsole {
                     entityManagerFactory.close();
                 }
                 default -> System.out.println("Choix invalide. Veuillez réessayer.");
-
             }
-
         }while (choice != 13);
     }
     private static void addUser(Scanner scanner){
-        System.out.println("Entrer le nom de l'utilisateur' : ");
+        System.out.println("Entrer le nom de l'utilisateur : ");
         String name = scanner.nextLine();
 
         User user = new User();
@@ -84,34 +86,39 @@ public class ToDoListAppConsole {
             System.out.println();
         }
     }
-
     private static void addTask(Scanner scanner){
-        System.out.println("Entrer le titre de la tâche : ");
+        System.out.print("Dans quelle catégorie voulez-vous enregistrer cette tâche : ");
+        String categoryName = scanner.nextLine();
+        System.out.print("Entrer le titre de la tâche : ");
         String title = scanner.nextLine();
-        System.out.println("Entrer la description de la tâche : ");
+        System.out.print("Entrer la description de la tâche : ");
         String description = scanner.nextLine();
-        System.out.println("Entrer la date d'échéance de la tâche (dd.MM.yyyy): ");
+        System.out.print("Entrer la date d'échéance de la tâche (dd.MM.yyyy): ");
         String dueDateStr = scanner.nextLine();
         LocalDate dueDate = LocalDate.parse(dueDateStr, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        System.out.println("Entrer le niveau de priorité de la tâche (1 à 10): ");
+        System.out.print("Entrer le niveau de priorité de la tâche (1 à 10): ");
         Integer priority = scanner.nextInt();
         scanner.nextLine();
         System.out.println();
         displayUsers();
         System.out.println();
-        System.out.println("Entrez la personne pour qui cette tâche est attribuée: (id)");
+        System.out.print("Entrez la personne pour qui cette tâche est attribuée: (id)");
         Long userId = scanner.nextLong();
+
+        List<String> categories = new ArrayList<>();
+        categories.add(categories.size() + 1,categoryName);
 
         Task task = new Task();
         task.setTitle(title);
         task.setCompleted(false);
+        task.setCategories(categoryName);
 
         InfoTask infoTask = new InfoTask(description,dueDate,priority);
 
         task.setInfoTask(infoTask);
         infoTask.setTask(task);
 
-        if(taskDAO.addTaskOfUser(task,userId)){
+        if(taskDAO.addTaskOfUser(task,userId,categoryName)){
             System.out.println("Tâche ajoutée avec succès !");
             System.out.println(task.getTitle() +" "+ infoTask);
             System.out.println();
@@ -120,7 +127,22 @@ public class ToDoListAppConsole {
             System.out.println();
         }
     }
+    public static void addCategory(Scanner scanner){
+        System.out.println("Entrer le nom de la catégorie : ");
+        String name = scanner.nextLine();
 
+        Category category = new Category();
+        category.setName(name);
+
+        if(categoryDAO.addCategory(category)){
+            System.out.println("Catégorie ajoutée avec succès !");
+            System.out.println(category.getName());
+            System.out.println();
+        }else {
+            System.out.println("Erreur");
+            System.out.println();
+        }
+    }
     private static void displayTasksOfUser(Scanner scanner){
         if(userDAO.getAllUsers().isEmpty()){
             System.out.println("Aucune utilisateur actuellement en BDD.");
@@ -171,7 +193,6 @@ public class ToDoListAppConsole {
             System.out.println();
         }
     }
-
     private static void deleteTask(Scanner scanner){
         if(taskDAO.getAllTasks().isEmpty()){
             System.out.println("Aucune tâche actuellement en BDD.");
@@ -212,7 +233,25 @@ public class ToDoListAppConsole {
             }
         }
     }
+    public static void deleteCategory(Scanner scanner){
+        if(categoryDAO.getAllCategories().isEmpty()){
+            System.out.println("Aucune catégorie actuellement en BDD.");
+            System.out.println();
+        }else{
+            System.out.println("Entrez l'ID de la catégorie à suppimer : ");
+            Long categoryId  = scanner.nextLong();
+            scanner.nextLine();
 
+            if (categoryDAO.getCategoryById(categoryId)){
+                categoryDAO.deleteCategory(categoryId);
+                System.out.println("Suppression OK");
+                System.out.println();
+            }else {
+                System.out.println("Erreur");
+                System.out.println();
+            }
+        }
+    }
     private static void markTaskAsCompleted(Scanner scanner){
         if(taskDAO.getAllTasks().isEmpty()){
             System.out.println("Aucune tâche actuellement en BDD.");

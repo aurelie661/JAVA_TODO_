@@ -11,10 +11,15 @@ public class Category {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "category_task", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "task_id"))
     List<Task> tasks = new ArrayList<>();
 
     public Category() {
+    }
+
+    public Category(String name) {
+        this.name = name;
     }
 
     public Long getId() {
