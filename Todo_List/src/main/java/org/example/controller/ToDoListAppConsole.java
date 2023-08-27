@@ -105,13 +105,14 @@ public class ToDoListAppConsole {
         System.out.print("Entrez la personne pour qui cette tâche est attribuée: (id)");
         Long userId = scanner.nextLong();
 
-        List<String> categories = new ArrayList<>();
-        categories.add(categories.size() + 1,categoryName);
+        Category category = new Category(categoryName);
+        List<Category> categories = new ArrayList<>();
+        categories.add(category);
 
         Task task = new Task();
         task.setTitle(title);
         task.setCompleted(false);
-        task.setCategories(categoryName);
+        task.setCategories(categories);
 
         InfoTask infoTask = new InfoTask(description,dueDate,priority);
 
@@ -120,7 +121,7 @@ public class ToDoListAppConsole {
 
         if(taskDAO.addTaskOfUser(task,userId,categoryName)){
             System.out.println("Tâche ajoutée avec succès !");
-            System.out.println(task.getTitle() +" "+ infoTask);
+            System.out.println("Titre : "+task.getTitle() +" "+ infoTask+" "+task.getCategories());
             System.out.println();
         }else {
             System.out.println("Erreur");
@@ -145,7 +146,7 @@ public class ToDoListAppConsole {
     }
     private static void displayTasksOfUser(Scanner scanner){
         if(userDAO.getAllUsers().isEmpty()){
-            System.out.println("Aucune utilisateur actuellement en BDD.");
+            System.out.println("Aucune utilisateur actuellement dans l'application.");
             System.out.println();
         }else{
             displayUsers();
@@ -159,7 +160,8 @@ public class ToDoListAppConsole {
             }else{
                 List<Task> tasks = taskDAO.getTaskOfUser(userId);
                 for (Task task : tasks) {
-                    System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString());
+                    System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString()+ " Catégorie : "+
+                    task.getCategories());
                 }
                 System.out.println();
             }
@@ -188,14 +190,15 @@ public class ToDoListAppConsole {
         } else {
             System.out.println("=== Liste des tâches ===");
             for (Task task : tasks) {
-                System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString());
+                System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString()+ " Catégorie : "+
+                        task.getCategories());
             }
             System.out.println();
         }
     }
     private static void deleteTask(Scanner scanner){
         if(taskDAO.getAllTasks().isEmpty()){
-            System.out.println("Aucune tâche actuellement en BDD.");
+            System.out.println("Aucune tâche actuellement dans l'application.");
             System.out.println();
         }else{
             displayTasks();
@@ -214,7 +217,7 @@ public class ToDoListAppConsole {
     }
     private static void deleteUser(Scanner scanner){
         if(userDAO.getAllUsers().isEmpty()){
-            System.out.println("Aucune utilisateur actuellement en BDD.");
+            System.out.println("Aucune utilisateur actuellement dans l'application.");
             System.out.println();
         }else{
             displayUsers();
@@ -235,7 +238,7 @@ public class ToDoListAppConsole {
     }
     public static void deleteCategory(Scanner scanner){
         if(categoryDAO.getAllCategories().isEmpty()){
-            System.out.println("Aucune catégorie actuellement en BDD.");
+            System.out.println("Aucune catégorie actuellement dans l'application.");
             System.out.println();
         }else{
             System.out.println("Entrez l'ID de la catégorie à suppimer : ");
@@ -254,7 +257,7 @@ public class ToDoListAppConsole {
     }
     private static void markTaskAsCompleted(Scanner scanner){
         if(taskDAO.getAllTasks().isEmpty()){
-            System.out.println("Aucune tâche actuellement en BDD.");
+            System.out.println("Aucune tâche actuellement dans l'application.");
             System.out.println();
         }else{
             displayTasks();
