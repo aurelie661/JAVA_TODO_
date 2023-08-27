@@ -61,7 +61,6 @@ public class ToDoListAppConsole {
                 case 13 -> {
                     System.out.println("Bye");
                     entityManagerFactory.close();
-                    break;
                 }
                 default -> System.out.println("Choix invalide. Veuillez réessayer.");
 
@@ -79,8 +78,10 @@ public class ToDoListAppConsole {
         if(userDAO.addUser(user)){
             System.out.println("Utilisateur ajoutée avec succès !");
             System.out.println(user.getName());
+            System.out.println();
         }else {
             System.out.println("Erreur");
+            System.out.println();
         }
     }
 
@@ -113,21 +114,33 @@ public class ToDoListAppConsole {
         if(taskDAO.addTaskOfUser(task,userId)){
             System.out.println("Tâche ajoutée avec succès !");
             System.out.println(task.getTitle() +" "+ infoTask);
+            System.out.println();
         }else {
             System.out.println("Erreur");
+            System.out.println();
         }
     }
 
     private static void displayTasksOfUser(Scanner scanner){
-        displayUsers();
-        System.out.println();
-        System.out.println("Pour quel utilisateur :");
-        Long userId = scanner.nextLong();
-        scanner.nextLine();
-
-        List<Task> tasks = taskDAO.getTaskOfUser(userId);
-        for (Task task : tasks) {
-            System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString());
+        if(userDAO.getAllUsers().isEmpty()){
+            System.out.println("Aucune utilisateur actuellement en BDD.");
+            System.out.println();
+        }else{
+            displayUsers();
+            System.out.println();
+            System.out.println("Pour quel utilisateur :");
+            Long userId = scanner.nextLong();
+            scanner.nextLine();
+            if(taskDAO.getTaskOfUser(userId).isEmpty()){
+                System.out.println("Aucune tâche trouvée pour cette utilisateur.");
+                System.out.println();
+            }else{
+                List<Task> tasks = taskDAO.getTaskOfUser(userId);
+                for (Task task : tasks) {
+                    System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString());
+                }
+                System.out.println();
+            }
         }
     }
     private static void displayUsers() {
@@ -135,11 +148,13 @@ public class ToDoListAppConsole {
 
         if (users.isEmpty()) {
             System.out.println("Aucun utilisateur trouvé.");
+            System.out.println();
         } else {
             System.out.println("=== Liste des utilisateurs ===");
             for (User user : users) {
                 System.out.println(user.getId() + ". " + user.getName());
             }
+            System.out.println();
         }
     }
     private static void displayTasks() {
@@ -147,49 +162,74 @@ public class ToDoListAppConsole {
 
         if (tasks.isEmpty()) {
             System.out.println("Aucune tâche trouvée.");
+            System.out.println();
         } else {
             System.out.println("=== Liste des tâches ===");
             for (Task task : tasks) {
                 System.out.println(task.getId() + ". " + task.getTitle() + " (" + (task.isCompleted() ? "Terminée" : "En cours") + ") "+ task.getInfoTask().toString());
             }
+            System.out.println();
         }
     }
 
     private static void deleteTask(Scanner scanner){
-        System.out.println("Entrez l'ID de la tâche à supprimer : ");
-        Long taskId  = scanner.nextLong();
-        scanner.nextLine();
+        if(taskDAO.getAllTasks().isEmpty()){
+            System.out.println("Aucune tâche actuellement en BDD.");
+            System.out.println();
+        }else{
+            displayTasks();
+            System.out.println("Entrez l'ID de la tâche à supprimer : ");
+            Long taskId  = scanner.nextLong();
+            scanner.nextLine();
 
-        if (taskDAO.deleteTask(taskId)){
-            System.out.println("Suppression OK");
-        }else {
-            System.out.println("Erreur");
+            if (taskDAO.deleteTask(taskId)){
+                System.out.println("Suppression OK");
+                System.out.println();
+            }else {
+                System.out.println("Erreur");
+                System.out.println();
+            }
         }
     }
     private static void deleteUser(Scanner scanner){
-        displayUsers();
-        System.out.println();
-        System.out.println("Entrez l'ID de la personne à suppimer : ");
-        Long userId  = scanner.nextLong();
-        scanner.nextLine();
+        if(userDAO.getAllUsers().isEmpty()){
+            System.out.println("Aucune utilisateur actuellement en BDD.");
+            System.out.println();
+        }else{
+            displayUsers();
+            System.out.println();
+            System.out.println("Entrez l'ID de la personne à suppimer : ");
+            Long userId  = scanner.nextLong();
+            scanner.nextLine();
 
-        if (userDAO.getUserById(userId)){
-            userDAO.deleteUser(userId);
-            System.out.println("Suppression OK");
-        }else {
-            System.out.println("Erreur");
+            if (userDAO.getUserById(userId)){
+                userDAO.deleteUser(userId);
+                System.out.println("Suppression OK");
+                System.out.println();
+            }else {
+                System.out.println("Erreur");
+                System.out.println();
+            }
         }
     }
 
     private static void markTaskAsCompleted(Scanner scanner){
-        System.out.println("Entrez l'ID de la tâche terminer : ");
-        Long taskId  = scanner.nextLong();
-        scanner.nextLine();
+        if(taskDAO.getAllTasks().isEmpty()){
+            System.out.println("Aucune tâche actuellement en BDD.");
+            System.out.println();
+        }else{
+            displayTasks();
+            System.out.println("Entrez l'ID de la tâche terminer : ");
+            Long taskId  = scanner.nextLong();
+            scanner.nextLine();
 
-        if (taskDAO.markTaskAsCompleted(taskId)){
-            System.out.println("Modification OK");
-        }else {
-            System.out.println("Erreur");
+            if (taskDAO.markTaskAsCompleted(taskId)){
+                System.out.println("Modification OK");
+                System.out.println();
+            }else {
+                System.out.println("Erreur");
+                System.out.println();
+            }
         }
     }
 }

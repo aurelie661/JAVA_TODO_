@@ -17,6 +17,9 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "task_category", joinColumns = @JoinColumn(name = "task_id"),inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories = new ArrayList<>();
     public Task() {
     }
     public Long getId() {
@@ -53,5 +56,13 @@ public class Task {
     }
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

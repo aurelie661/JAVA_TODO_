@@ -55,12 +55,11 @@ public class TaskDAOImpl implements ITaskDAO {
         }
     }
 
-    public List<Task> getTaskOfUser(Long userId) {
+    public List getTaskOfUser(Long userId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        List<Task> tasks = entityManager.createQuery("SELECT t FROM Task t WHERE t.person.id = :id")
+        return entityManager.createQuery("SELECT t FROM Task t WHERE t.user.id = :id")
                 .setParameter("id",userId)
                 .getResultList();
-        return tasks;
     }
     @Override
     public List<Task> getAllTasks() {
