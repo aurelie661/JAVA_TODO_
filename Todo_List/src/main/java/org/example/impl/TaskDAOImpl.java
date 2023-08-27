@@ -1,5 +1,6 @@
 package org.example.impl;
 import org.example.dao.ITaskDAO;
+import org.example.entity.Category;
 import org.example.entity.Task;
 import org.example.entity.User;
 import javax.persistence.EntityManager;
@@ -33,15 +34,16 @@ public class TaskDAOImpl implements ITaskDAO {
             entityManager.close();
         }
     }
-    public boolean addTaskOfUser(Task task, Long userId, String categoryName) {
+    public boolean addTaskOfUser(Task task, Long userId, Category category) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             User user = entityManager.find(User.class,userId);
             task.setUser(user);
-            task.setCategories(categoryName);
+            //task.setCategories(category.getName());
             user.getTasks().add(task);
+            //category.setTasks(category.getTasks());
             entityManager.persist(task);
             transaction.commit();
             return true;

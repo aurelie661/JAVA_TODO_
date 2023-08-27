@@ -106,20 +106,18 @@ public class ToDoListAppConsole {
         Long userId = scanner.nextLong();
 
         Category category = new Category(categoryName);
-        List<Category> categories = new ArrayList<>();
-        categories.add(category);
 
         Task task = new Task();
         task.setTitle(title);
         task.setCompleted(false);
-        task.setCategories(categories);
+        task.setCategories(category.getName());
 
         InfoTask infoTask = new InfoTask(description,dueDate,priority);
 
         task.setInfoTask(infoTask);
         infoTask.setTask(task);
 
-        if(taskDAO.addTaskOfUser(task,userId,categoryName)){
+        if(taskDAO.addTaskOfUser(task,userId,category)){
             System.out.println("Tâche ajoutée avec succès !");
             System.out.println("Titre : "+task.getTitle() +" "+ infoTask+" "+task.getCategories());
             System.out.println();
