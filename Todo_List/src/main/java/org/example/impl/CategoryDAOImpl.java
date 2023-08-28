@@ -1,9 +1,12 @@
 package org.example.impl;
 import org.example.dao.ICategoryDAO;
 import org.example.entity.Category;
+import org.example.entity.Task;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class CategoryDAOImpl implements ICategoryDAO {
@@ -64,5 +67,44 @@ public class CategoryDAOImpl implements ICategoryDAO {
         }finally {
             entityManager.close();
         }
+    }
+
+    @Override
+    public List<Task> getTasksByCategory(Category category) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        String jpql = "SELECT t FROM Task t JOIN t.categories c WHERE c = :category";
+        TypedQuery<Task> query = entityManager.createQuery(jpql, Task.class);
+        query.setParameter("category", category);
+        List<Task> tasks = query.getResultList();
+        entityManager.close();
+        return tasks;
+    }
+
+    @Override
+    public void addTaskToCategory(Task task, Category category) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        task.getCategories().add(category);
+        entityManager.merge(task);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    @Override
+    public void removeTaskFromCategory(Task task, Category category) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        task.getCategories().removeIf(category1 -> (category1.getName().equals(category.getName())));
+        entityManager.merge(task);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    @Override
+    public String getCategoryName(Long categoryId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        String nameCategory = entityManager.find(Category.class,categoryId).getName();
+        entityManager.close();
+        return nameCategory;
     }
 }
