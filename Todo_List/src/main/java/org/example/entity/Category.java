@@ -11,8 +11,7 @@ public class Category {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "category_task", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "task_id"))
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
     List<Task> tasks = new ArrayList<>();
 
     public Category() {
@@ -20,6 +19,11 @@ public class Category {
 
     public Category(String name) {
         this.name = name;
+    }
+
+    public Category(String name, List<Task> tasks) {
+        this.name = name;
+        this.tasks = tasks;
     }
 
     public Long getId() {
