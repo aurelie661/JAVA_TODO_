@@ -117,7 +117,7 @@ public class ToDoListAppConsole {
         task.setInfoTask(infoTask);
         infoTask.setTask(task);
 
-        if(taskDAO.addTaskOfUser(task,userId,category)){
+        if(taskDAO.addTaskOfUser(task,userId,categoryName)){
             System.out.println("Tâche ajoutée avec succès !");
             System.out.println("Titre : "+task.getTitle() +" "+ infoTask+" "+task.getCategories());
             System.out.println();

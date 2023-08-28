@@ -17,10 +17,16 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToMany(mappedBy = "tasks")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "task_category",joinColumns = @JoinColumn(name = "task_id"),inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<>();
     public Task() {
     }
+
+    public Task(String title) {
+        this.title = title;
+    }
+
     public Long getId() {
         return id;
     }
@@ -66,5 +72,6 @@ public class Task {
     }
 
     public void setCategories(String categoryName) {
+        this.categories.add(new Category());
     }
 }
