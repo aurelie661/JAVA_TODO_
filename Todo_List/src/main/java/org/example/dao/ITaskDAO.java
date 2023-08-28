@@ -9,4 +9,5 @@ public interface ITaskDAO {
     public boolean deleteTask(Long taskId);
 
     public boolean markTaskAsCompleted(Long taskId);
+    public List<Task> getTasksByUserId(Long userId);
 }
