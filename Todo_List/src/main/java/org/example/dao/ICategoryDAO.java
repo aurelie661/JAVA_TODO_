@@ -13,4 +13,5 @@ public interface ICategoryDAO {
     void addTaskToCategory(Task task, Category category);
     void removeTaskFromCategory(Task task, Category category);
     String getCategoryName(Long categoryId);
+    Category getCategoryById_(Long categoryId);
 }

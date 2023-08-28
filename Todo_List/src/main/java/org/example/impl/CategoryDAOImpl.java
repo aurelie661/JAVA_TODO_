@@ -107,4 +107,12 @@ public class CategoryDAOImpl implements ICategoryDAO {
         entityManager.close();
         return nameCategory;
     }
+
+    @Override
+    public Category getCategoryById_(Long categoryId) {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Category category = entityManager.find(Category.class,categoryId);
+            entityManager.close();
+            return category;
+    }
 }

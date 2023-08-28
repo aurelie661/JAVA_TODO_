@@ -52,10 +52,10 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", tasks=" + tasks +
-                '}';
+        return "Category => " +
+                "id = " + id +
+                ", name = '" + name + '\'' +
+                ", tasks = " + tasks +
+                " =>";
     }
 }

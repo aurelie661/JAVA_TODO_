@@ -74,4 +74,12 @@ public class Task {
     public void setCategories(String categoryName) {
         this.categories.add(new Category());
     }
+
+    @Override
+    public String toString() {
+        return "Task => " +
+                "id = " + id +
+                ", title = '" + title + '\'' +
+                ", isCompleted = " + isCompleted;
+    }
 }
